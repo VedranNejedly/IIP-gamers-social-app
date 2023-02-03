@@ -1,0 +1,13 @@
+{% extends 'index.html' %}
+
+{% block title %}{{game.title}}{% endblock %}
+  
+{% block content %}
+<h1>{{game.title}}</h1>
+<div>
+    <p>Relase date : {{game.release_date}}</p>
+    <p>Genre: {{game.genre}}</p>
+    <p>About the game: {{game.description}}</p>
+
+</div>
+{% endblock %}

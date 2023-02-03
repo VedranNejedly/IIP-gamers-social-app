@@ -1,0 +1,20 @@
+{% extends 'index.html' %}
+  
+{% block title %}Home{% endblock %}
+  
+{% block content %}
+{% if {{account.role==1}} %}
+<h1>Hello user</h1>
+{% endif %}
+
+<!-- <ul>
+    {% for acc in accounts %}
+    <li>
+       <a href="profile/{{acc.username}}">a</a>
+    </li>
+    {% endfor %}
+
+</ul> -->
+
+
+{% endblock %}

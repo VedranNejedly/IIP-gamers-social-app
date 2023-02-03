@@ -1,0 +1,25 @@
+{% extends 'index.html' %}
+  
+{% block title %}Home{% endblock %}
+  
+{% block content %}
+<h1 class="h2">Dashboard</h1>
+{% if session['role'] == 2 %}
+    <h2>ADMIN</h2>
+
+{% else %}
+<ul>
+    {% for acc in accounts %}
+    <li>
+       <a href="profile/{{acc.username}}">a</a>
+    </li>
+    {% endfor %}
+
+</ul>
+
+{% endif %}
+
+
+
+
+{% endblock %}

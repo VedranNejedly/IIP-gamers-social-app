@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+  
+{% block title %}Games{% endblock %}
+  
+{% block content %}
+<h1 class="h2">Dashboard</h1>
+
+<ul>
+    {% for game in games %}
+    <li>
+        <a href="games/{{game.title}}">{{game.title}}</a>
+    </li>
+    {% endfor %}
+
+</ul>
+
+
+{% endblock %}

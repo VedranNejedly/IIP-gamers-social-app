@@ -1,0 +1,11 @@
+.login-section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #898e8c;
+    height: 100vh;
+}
+
+.login-section input{
+    margin: 10px 0;
+}
