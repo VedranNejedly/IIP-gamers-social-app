@@ -1,0 +1,17 @@
+.games-list{
+    display: flex;
+    flex-wrap: wrap;
+}
+.games-list .card{
+    margin:10px;
+    border: 0;
+}
+.games-list a{
+    color: black;
+    font-size: 18px;
+}
+.games-list .card img{
+    max-height: 150px;
+    object-fit: cover;
+    width: 100%;
+}

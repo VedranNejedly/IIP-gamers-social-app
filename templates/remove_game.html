@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head> 
+<body>
+    <h1>Remove game page
+    </h1>
+    <a href="{{ url_for('games') }}">Back to games</a>
+
+    <form action="{{ url_for('removegame') }}" method="post" autocomplete="off"> 
+        <div class="form-group">
+         <label for="title" class="cols-sm-2 control-label">Game Title</label>
+            <select name="title">
+                {% for game in listofgames %}
+                    <option value="{{game.title}}">{{game.title}}</option>
+                {% endfor %}
+            </select> 
+        </div>
+        <input type="submit" value="Remove game" class="form-control btn btn-primary " name="">
+
+
+</body>
+</html>

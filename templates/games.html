@@ -3,16 +3,32 @@
 {% block title %}Games{% endblock %}
   
 {% block content %}
-<h1 class="h2">Dashboard</h1>
+<h1 class="h2">Welcome to games page</h1>
+{% if session['role'] == 2 %}
+<h2>ADMIN  GAMES PANEL</h2>
 
-<ul>
+<a class="py-2 d-none d-md-inline-block" href="{{ url_for('addgame') }}">Add Game</a>
+<a class="py-2 d-none d-md-inline-block" href="{{ url_for('removegame') }}">Remove game</a>
+
+
+{% endif %}
+
+<div class="games-list">
     {% for game in games %}
-    <li>
-        <a href="games/{{game.title}}">{{game.title}}</a>
-    </li>
+
+    <a href="games/{{game.title}}">
+      <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="https://picsum.photos/200/300" alt="Card image cap">
+          <div class="card-body">
+            <h3 class="card-title">{{game.title}}</a>
+            <p class="card-text">{{game.desc}}</p>
+          </div>
+        </div>
+    </a>
+
     {% endfor %}
 
-</ul>
+</div>
 
 
 {% endblock %}

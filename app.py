@@ -163,6 +163,37 @@ def games():
     return redirect(url_for('login'))
 
 
+
+@app.route('/add-game',methods=['GET', 'POST'])
+def addgame(): 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == 'POST' and 'title' in request.form and 'description' in request.form and 'genre' in request.form and 'release_date' in request.form:
+        # Create variables for easy access
+        title = request.form['title']
+        description = request.form['description']
+        genre = request.form['genre']
+        release_date = request.form['release_date']
+
+ 
+        #Check if game exists 
+        cursor.execute('SELECT * FROM games WHERE title = %s', (title,))
+        game = cursor.fetchone()
+        print(game)
+        # If account exists show error and validation checks
+        if game:
+            flash('Game already exists!')
+        else:
+            # Game doesnt exists and the form data is valid, now insert new game into games table
+            cursor.execute("INSERT INTO games (title, description, genre,release_date) VALUES (%s,%s,%s,%s)", (title, description, genre,release_date))
+            conn.commit()
+            flash('You have successfully registered!')
+    elif request.method == 'POST':
+        # Form is empty... (no POST data)
+        flash('Please fill out the form!')
+    # Show registration form with message (if any)   
+    return render_template('add-game.html')
+
+
 @app.route('/games/<title>')
 def profile_by_title(title): 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -176,6 +207,21 @@ def profile_by_title(title):
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
+
+@app.route('/remove-game',methods=['GET', 'POST'])
+def removegame(): 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute('SELECT * FROM games')
+    listofgames = cursor.fetchall()
+    if request.method == 'POST' and 'title' in request.form:
+        title = request.form['title']
+        cursor.execute('SELECT * FROM games WHERE title = %s', (title,))
+        game = cursor.fetchone()
+        cursor.execute('DELETE FROM games WHERE title = %s',(title,))
+        conn.commit()
+        return redirect(url_for('games'))
+    return render_template('remove_game.html',listofgames=listofgames)
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
