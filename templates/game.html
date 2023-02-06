@@ -15,7 +15,9 @@
 </div>
 
 {% if session['role'] == 2 %}
-    
+
+
+
     <form action="{{ url_for('addgame') }}" method="post" autocomplete="off"> 
         <div class="form-group">
          <label for="title" class="cols-sm-2 control-label">Game Title</label>
@@ -57,6 +59,8 @@
 
 {% else %}
 <h2>User section</h2>
+<h2>Link for guides</h2>
+    <a href="/games/{{game.title}}/guides">Game guides</a>
 <form action="{{ url_for('addcomment', title = game.title) }}" method="post" autocomplete="off"> 
     <div class="form-group">
      <label for="comment" class="cols-sm-2 control-label">Add your comment here</label>

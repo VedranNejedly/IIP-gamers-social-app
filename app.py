@@ -241,6 +241,39 @@ def profile_by_title(title):
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
+@app.route('/games/<title>/guides')
+def getGuides(title): 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    # Check if user is loggedin
+    if 'loggedin' in session:
+        cursor.execute('SELECT * FROM games WHERE title = %s', (title,))
+        game = cursor.fetchone()
+        cursor.execute('SELECT * FROM guides WHERE game_id = %s', [game[0]])
+        guides = cursor.fetchall()
+        # print(guides)
+        # cursor.execute('SELECT * FROM users')
+        # users = cursor.fetchall()
+        return render_template('guides.html', guides=guides, game= game)
+    # User is not loggedin redirect to login page
+    return redirect(url_for('login'))
+
+@app.route('/games/<title>/guides/<guide_id>')
+def getGuide(title,guide_id): 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    # Check if user is loggedin
+    if 'loggedin' in session:
+        # cursor.execute('SELECT * FROM games WHERE title = %s', (title,))
+        # game = cursor.fetchone()
+        cursor.execute('SELECT * FROM guides WHERE id = %s', (guide_id,))
+        guide = cursor.fetchone()
+        # print(guides)
+        # cursor.execute('SELECT * FROM users')
+        # users = cursor.fetchall()
+        return render_template('guide.html', guide = guide)
+    # User is not loggedin redirect to login page
+    return redirect(url_for('login'))
+
+
 @app.route('/games/<title>',methods=['GET', 'POST'])
 def addcomment(title): 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
