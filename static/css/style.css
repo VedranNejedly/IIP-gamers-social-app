@@ -1,4 +1,10 @@
 @import "games-list.css";
+@import "game.css";
+@import "typography.css";
+@import "comments.css";
+
+
+
 
 li{
     list-style-type: none;

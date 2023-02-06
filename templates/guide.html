@@ -8,14 +8,19 @@
 
 
 {% block content %}
-
+<div>
     <h2> {{guide.title}}</h2>
     <p>{{guide.guide_text}}</p>
     {% if guide.youtube_link %}
-    <h2>{{guide.youtube_link}}</h2>
     <iframe width="560" height="315" src="{{guide.youtube_link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     {% endif %}
 </div>
+
+
+    <h2>{{guide.youtube_link}}</h2>
+
+
+
 
 
 

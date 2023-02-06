@@ -44,17 +44,16 @@
 
 
 
-    <h2> Comments go here</h2>
-    {% for comment in comments %}
-    {% for user in users %}
-    {% if user.id == comment.commentator_id %}
-        <a href="/profile/{{user.username}}">{{user.username}}</a>
-        <p>{{comment.comment}}</p>
-    {% endif %}
-    
-    {% endfor %}
-    
-    
+        {% for comment in comments %}
+        {% for user in users %}
+        {% if user.id == comment.commentator_id %}
+            <div class="comment">
+                <a href="/profile/{{user.username}}">{{user.username}}</a>
+                <p>{{comment.comment}}</p>
+            </div>
+        {% endif %}
+        
+        {% endfor %}
     
     {% endfor %}
 

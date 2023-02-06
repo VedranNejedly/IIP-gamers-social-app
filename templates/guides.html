@@ -5,6 +5,8 @@
 {% block content %}
 <h1 class="h2">Welcome to guides page</h1>
 
+<a class="py-2 d-none d-md-inline-block" href="{{ url_for('addGuide',title = game.title) }}">Add Guide</a>
+
 
 {% for guide in guides %}
 

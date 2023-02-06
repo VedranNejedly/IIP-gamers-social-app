@@ -1,0 +1,9 @@
+.title-guides-wrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title-guides-wrapper a{
+    color: #000000;
+}

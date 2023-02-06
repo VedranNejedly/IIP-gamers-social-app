@@ -6,7 +6,10 @@
 
 
 {% block content %}
-<h1>{{game.title}}</h1>
+<div class="title-guides-wrapper">
+    <h2>{{game.title}}</h2>
+    <a href="/games/{{game.title}}/guides">Game guides</a>
+</div>
 <div>
     <p>Relase date : {{game.release_date}}</p>
     <p>Genre: {{game.genre}}</p>
@@ -56,11 +59,9 @@
             </div>
         </div>
         <input type="submit" value="Add game" class="form-control btn btn-primary " name="">
-
+    </form>
 {% else %}
-<h2>User section</h2>
-<h2>Link for guides</h2>
-    <a href="/games/{{game.title}}/guides">Game guides</a>
+
 <form action="{{ url_for('addcomment', title = game.title) }}" method="post" autocomplete="off"> 
     <div class="form-group">
      <label for="comment" class="cols-sm-2 control-label">Add your comment here</label>
@@ -74,16 +75,16 @@
 </form>
 
 
-<h2> Comments go here</h2>
-{% for comment in comments %}
-{% for user in users %}
-{% if user.id == comment.user_id %}
-    <a href="/profile/{{user.username}}">{{user.username}}</a>
-    <p>{{comment.comment}}</p>
-{% endif %}
+    {% for comment in comments %}
+    {% for user in users %}
+    {% if user.id == comment.user_id %}
+        <div class="comment">
+            <a href="/profile/{{user.username}}">{{user.username}}</a>
+            <p>{{comment.comment}}</p>
+        </div>
+    {% endif %}
 
-{% endfor %}
-
+    {% endfor %}
 
 
 {% endfor %}

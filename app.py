@@ -274,6 +274,35 @@ def getGuide(title,guide_id):
     return redirect(url_for('login'))
 
 
+
+@app.route('/games/<title>/guides/add-guide',methods=['GET', 'POST'])
+def addGuide(title): 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == 'POST' and 'title' in request.form and 'guide_text' in request.form:
+        # Create variables for easy access
+        guide_title = request.form['title']
+        guide_text = request.form['guide_text']
+        youtube_link = request.form['youtube_link']
+        #Check if game exists 
+        cursor.execute('SELECT * FROM games WHERE title = %s', (title,))
+        game = cursor.fetchone()
+        # Game doesnt exists and the form data is valid, now insert new game into games table
+        if youtube_link:
+            cursor.execute("INSERT INTO guides (title, guide_text, youtube_link,game_id,user_id) VALUES (%s,%s,%s,%s)", (guide_title, guide_text, youtube_link,game[0],session['id']))
+            conn.commit()
+        else:
+            cursor.execute("INSERT INTO guides (title, guide_text,game_id,user_id) VALUES (%s,%s,%s,%s)", (guide_title, guide_text,game[0],session['id']))
+            conn.commit()
+        # return render_template('add-guide.html')
+        return redirect(url_for('getGuides',title = title))
+    
+    return render_template('add-guide.html',title=title)
+
+
+
+
+
+
 @app.route('/games/<title>',methods=['GET', 'POST'])
 def addcomment(title): 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
