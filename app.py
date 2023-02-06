@@ -121,31 +121,61 @@ def logout():
    # Redirect to login page
    return redirect(url_for('login'))
   
-@app.route('/profile')
-def profile(): 
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+# @app.route('/profile')
+# def profile(): 
+#     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
    
-    # Check if user is loggedin
-    if 'loggedin' in session:
-        cursor.execute('SELECT * FROM users WHERE id = %s', [session['id']])
-        account = cursor.fetchone()
-        # Show the profile page with account info
-        return render_template('profile.html', account=account)
-    # User is not loggedin redirect to login page
-    return redirect(url_for('login'))
+#     # Check if user is loggedin
+#     if 'loggedin' in session:
+#         cursor.execute('SELECT * FROM users WHERE id = %s', [session['id']])
+#         account = cursor.fetchone()
+#         cursor.execute('SELECT * FROM users WHERE role = 1')
+#         accounts = cursor.fetchall()
+
+#         # Show the profile page with account info
+#         return render_template('profile.html', account=account, accounts = accounts)
+#     # User is not loggedin redirect to login page
+#     return redirect(url_for('login'))
 
 @app.route('/profile/<username>')
 def profile_by_id(username): 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-   
     # Check if user is loggedin
     if 'loggedin' in session:
         cursor.execute('SELECT * FROM users WHERE username = %s', [username])
         account = cursor.fetchone()
+        cursor.execute('SELECT * FROM users')
+        users = cursor.fetchall()
+        cursor.execute('SELECT * FROM profile_comments WHERE target_id = %s', [account['id']])
+        comments = cursor.fetchall()
+        if request.method == 'POST' and 'comment' in request.form:
+            comment = request.form['comment']
+            cursor.execute("INSERT INTO profile_comments (comment, commentator_id, target_id) VALUES (%s,%s,%s)", (comment, session['id'], account['id']))
+            conn.commit()
+
         # Show the profile page with account info
-        return render_template('profile.html', account=account)
+        return render_template('profile.html', account=account,comments=comments,users=users)
     # User is not loggedin redirect to login page
-    return redirect(url_for('login'))
+
+
+@app.route('/profile/<username>',methods=['GET', 'POST'])
+def profileComment(username): 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
+    account = cursor.fetchone()
+    cursor.execute('SELECT * FROM users')
+    users = cursor.fetchall()
+    cursor.execute('SELECT * FROM profile_comments WHERE target_id = %s', [account['id']])
+    comments = cursor.fetchall()
+    if request.method == 'POST' and 'comment' in request.form:
+        # Create variables for easy access
+        comment = request.form['comment']
+        # Check if game exists 
+        cursor.execute("INSERT INTO profile_comments (comment, commentator_id, target_id) VALUES (%s,%s,%s)", (comment, session['id'], account['id']))
+        conn.commit()
+        cursor.execute('SELECT * FROM profile_comments where target_id = %s', [account['id']])
+        comments = cursor.fetchall()
+        return render_template('profile.html',account=account,comments=comments,users=users)
 
 
 
@@ -186,7 +216,8 @@ def addgame():
             # Game doesnt exists and the form data is valid, now insert new game into games table
             cursor.execute("INSERT INTO games (title, description, genre,release_date) VALUES (%s,%s,%s,%s)", (title, description, genre,release_date))
             conn.commit()
-            flash('You have successfully registered!')
+            return redirect(url_for('games'))
+
     elif request.method == 'POST':
         # Form is empty... (no POST data)
         flash('Please fill out the form!')
@@ -197,15 +228,45 @@ def addgame():
 @app.route('/games/<title>')
 def profile_by_title(title): 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-   
     # Check if user is loggedin
     if 'loggedin' in session:
         cursor.execute('SELECT * FROM games WHERE title = %s', [title])
         game = cursor.fetchone()
-        # Show the profile page with account info
-        return render_template('game.html', game=game)
+        cursor.execute('SELECT * FROM game_comments WHERE game_id = %s', [game[0]])
+        comments = cursor.fetchall()
+        print(comments)
+        cursor.execute('SELECT * FROM users')
+        users = cursor.fetchall()
+        return render_template('game.html', game=game,comments=comments,users=users)
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
+
+@app.route('/games/<title>',methods=['GET', 'POST'])
+def addcomment(title): 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if request.method == 'POST' and 'comment' in request.form:
+        # Create variables for easy access
+        comment = request.form['comment']
+        #Check if game exists 
+        cursor.execute('SELECT * FROM games WHERE title = %s', (title,))
+        game = cursor.fetchone()
+        print(game)
+        cursor.execute("INSERT INTO game_comments (comment, game_id, user_id) VALUES (%s,%s,%s)", (comment, game[0], session['id']))
+        conn.commit()
+        cursor.execute('SELECT * FROM game_comments WHERE game_id = %s', [game[0]])
+        print(game)
+        comments = cursor.fetchall()
+        # # If account exists show error and validation checks
+        # if game:
+        #     flash('Game already exists!')
+        # else:
+        #     # Game doesnt exists and the form data is valid, now insert new game into games table
+        #     cursor.execute("INSERT INTO games (title, description, genre,release_date) VALUES (%s,%s,%s,%s)", (title, description, genre,release_date))
+        #     conn.commit()
+        #     return redirect(url_for('games'))
+        return render_template('game.html',game=game,comments=comments)
+
+
 
 
 @app.route('/remove-game',methods=['GET', 'POST'])

@@ -3,22 +3,65 @@
 {% block title %}Profile{% endblock %}
   
 {% block content %}
-<h1>Profile Page</h1>
-<div>
-    <p>Your account details are below:</p>
-    <table>
-        <tr>
-            <td>Username:</td>
-            <td>{{ account}}</td>
-        </tr>
-        <tr>
-            <td>Username:</td>
-            <td>{{ account['username'] }}</td>
-        </tr>
-        <tr>
-            <td>Email:</td>
-            <td>{{ account['email'] }}</td>
-        </tr>
-    </table>
-</div>
+
+    {% if session['role'] == 2 %}
+    <h2>ADMIN</h2>
+
+    {% for account in accounts %}
+    <a href="profile/{{account.username}}">{{account.username}}</a>
+    {% endfor %}
+
+
+    {% else %}
+
+    <h1>Profile Page</h1>
+    <div>
+        <p>Your account details are below:</p>
+        <table>
+            <tr>
+                <td>Username:</td>
+                <td>{{ account['username'] }}</td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td>{{ account['email'] }}</td>
+            </tr>
+        </table>
+    </div>
+    <h2>User section</h2>
+    <form action="{{ url_for('profileComment',  username= account.username) }}" method="post" autocomplete="off"> 
+        <div class="form-group">
+        <label for="comment" class="cols-sm-2 control-label">Add your comment here</label>
+        <div class="cols-sm-10">
+        <div class="input-group">
+        <input type="text" class="form-control" name="comment" id="comment"  placeholder="Add your comment here"/>
+        </div>
+        </div>
+        </div>
+        <input type="submit" value="Comment" class="form-control btn btn-primary " name="">
+    </form>
+
+
+
+
+    <h2> Comments go here</h2>
+    {% for comment in comments %}
+    {% for user in users %}
+    {% if user.id == comment.commentator_id %}
+        <a href="/profile/{{user.username}}">{{user.username}}</a>
+        <p>{{comment.comment}}</p>
+    {% endif %}
+    
+    {% endfor %}
+    
+    
+    
+    {% endfor %}
+
+
+
+
+
+    {% endif %}
+
 {% endblock %}
