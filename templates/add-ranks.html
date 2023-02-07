@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head> 
+<body>
+    <h1>Add ranks for a game
+    </h1>
+    <form action="{{ url_for('addRanks') }}" method="post" autocomplete="off"> 
+        <div class="form-group">
+         <label for="title" class="cols-sm-2 control-label">Game Title</label>
+            <select name="title">
+                {% for game in listofgames %}
+                    <option value="{{game.title}}">{{game.title}}</option>
+                {% endfor %}
+            </select> 
+        </div>
+        <div class="form-group">
+            <label for="rank" class="cols-sm-2 control-label">Rank</label>
+                <input type="text" class="form-control" name="rank" id="rank" placeholder="Enter rank for game" required>
+        </div>
+        <input type="submit" value="Add rame" class="form-control btn btn-primary " name="">
+    </form>
+
+</body>
+</html>

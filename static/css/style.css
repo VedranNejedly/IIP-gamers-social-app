@@ -2,10 +2,12 @@
 @import "game.css";
 @import "typography.css";
 @import "comments.css";
+@import "card.css";
 
 
-
-
+.container-fluid,nav,html{
+    background-color:  #a0d2eb;
+}
 li{
     list-style-type: none;
 }

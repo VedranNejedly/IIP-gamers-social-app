@@ -17,50 +17,6 @@
 
 </div>
 
-{% if session['role'] == 2 %}
-
-
-
-    <form action="{{ url_for('addgame') }}" method="post" autocomplete="off"> 
-        <div class="form-group">
-         <label for="title" class="cols-sm-2 control-label">Game Title</label>
-         <div class="cols-sm-10">
-          <div class="input-group">
-           <input type="text" class="form-control" name="title" id="title"  placeholder="Enter game title"/>
-          </div>
-         </div>
-        </div>
-    
-        <div class="form-group">
-         <label for="description" class="cols-sm-2 control-label">Description</label>
-         <div class="cols-sm-10">
-          <div class="input-group">
-           <span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
-           <input type="text" class="form-control" name="description" id="description" placeholder="Enter game description" required>
-          </div>
-         </div>
-        </div>
-        <div class="form-group">
-            <label for="genre" class="cols-sm-2 control-label">Genre</label>
-            <div class="cols-sm-10">
-             <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
-              <input type="text" class="form-control" name="genre" id="genre" placeholder="Enter game genre" required>
-             </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="release_date" class="cols-sm-2 control-label">Release date</label>
-            <div class="cols-sm-10">
-             <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
-              <input type="date" class="form-control" name="release_date" id="release_date" placeholder="Enter release date." required>
-             </div>
-            </div>
-        </div>
-        <input type="submit" value="Add game" class="form-control btn btn-primary " name="">
-    </form>
-{% else %}
 
 <form action="{{ url_for('addcomment', title = game.title) }}" method="post" autocomplete="off"> 
     <div class="form-group">
@@ -76,23 +32,23 @@
 
 
     {% for comment in comments %}
-    {% for user in users %}
-    {% if user.id == comment.user_id %}
-        <div class="comment">
-            <a href="/profile/{{user.username}}">{{user.username}}</a>
-            <p>{{comment.comment}}</p>
-        </div>
-    {% endif %}
+        {% for user in users %}
+            {% if user.id == comment.user_id %}
+                <div class="comment">
+                    <a href="/profile/{{user.username}}">{{user.username}}</a>
+                    <p>{{comment.comment}}</p>
+                </div>
+            {% endif %}
+
+        {% endfor %}
+
 
     {% endfor %}
 
 
-{% endfor %}
+    <a class="py-2 d-none d-md-inline-block" href="{{ url_for('setRank', title=game.title) }}">Add ranks to game</a>
 
 
 
-
-
-{% endif %}
 
 {% endblock %}

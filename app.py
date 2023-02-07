@@ -144,8 +144,12 @@ def profile_by_id(username):
     if 'loggedin' in session:
         cursor.execute('SELECT * FROM users WHERE username = %s', [username])
         account = cursor.fetchone()
+        cursor.execute('SELECT * FROM games')
+        games = cursor.fetchall()
         cursor.execute('SELECT * FROM users')
         users = cursor.fetchall()
+        cursor.execute('SELECT * FROM user_plays WHERE user_id =%s',(account[0],))
+        user_plays = cursor.fetchall()
         cursor.execute('SELECT * FROM profile_comments WHERE target_id = %s', [account['id']])
         comments = cursor.fetchall()
         if request.method == 'POST' and 'comment' in request.form:
@@ -154,7 +158,7 @@ def profile_by_id(username):
             conn.commit()
 
         # Show the profile page with account info
-        return render_template('profile.html', account=account,comments=comments,users=users)
+        return render_template('profile.html', account=account,comments=comments,users=users,user_plays=user_plays,games=games)
     # User is not loggedin redirect to login page
 
 
@@ -176,6 +180,26 @@ def profileComment(username):
         cursor.execute('SELECT * FROM profile_comments where target_id = %s', [account['id']])
         comments = cursor.fetchall()
         return render_template('profile.html',account=account,comments=comments,users=users)
+
+
+@app.route('/games/<title>',methods=['GET', 'POST'])
+def addcomment(title): 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute('SELECT * FROM games WHERE title = %s', (title,))
+    game = cursor.fetchone()
+    cursor.execute('SELECT * FROM users')
+    users = cursor.fetchall()
+    cursor.execute('SELECT * FROM game_comments WHERE game_id = %s', [game[0]])
+    comments = cursor.fetchall()
+    if request.method == 'POST' and 'comment' in request.form:
+        # Create variables for easy access
+        comment = request.form['comment']
+        # Check if game exists 
+        cursor.execute("INSERT INTO game_comments (comment, user_id, game_id) VALUES (%s,%s,%s)", (comment, session['id'], game[0]))
+        conn.commit()
+        cursor.execute('SELECT * FROM game_comments where game_id = %s', [game[0]])
+        comments = cursor.fetchall()
+        return render_template('game.html',game=game,comments=comments,users=users)
 
 
 
@@ -225,21 +249,58 @@ def addgame():
     return render_template('add-game.html')
 
 
-@app.route('/games/<title>')
+@app.route('/games/<title>',methods=['GET', 'POST'])
 def profile_by_title(title): 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     # Check if user is loggedin
+    
+
     if 'loggedin' in session:
         cursor.execute('SELECT * FROM games WHERE title = %s', [title])
         game = cursor.fetchone()
         cursor.execute('SELECT * FROM game_comments WHERE game_id = %s', [game[0]])
         comments = cursor.fetchall()
-        print(comments)
+        cursor.execute('SELECT * FROM ranks WHERE game_id = %s', [game[0]])
+        ranks = cursor.fetchall()
         cursor.execute('SELECT * FROM users')
         users = cursor.fetchall()
-        return render_template('game.html', game=game,comments=comments,users=users)
+        #     # Create variables for easy access
+        #     rank = request.form['rank']
+        #     cursor.execute('SELECT * FROM user_plays WHERE user_id   = %s', [session['id']])
+        #     flag = cursor.fetchall()
+        #     print("flag flag flag")
+        #     print(flag)
+        #     cursor.execute("INSERT INTO user_plays (user_id,game_id, rank) VALUES (%s,%s,%s)", (session['id'], game[0], rank))
+        #     conn.commit()
+        #     return redirect(url_for('games'))
+
+            
+        return render_template('game.html', game=game,comments=comments,users=users,ranks=ranks)
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
+
+
+@app.route('/games/<title>/set-rank',methods=['GET', 'POST'])
+def setRank(title): 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute('SELECT * FROM games WHERE title = %s', [title])
+    game = cursor.fetchone()
+    cursor.execute('SELECT * FROM ranks WHERE game_id = %s', [game[0]])
+    ranks = cursor.fetchall()
+    if request.method == 'POST' and 'rank' in request.form:
+        cursor.execute("SELECT * FROM user_plays WHERE user_id =%s",[session['id']])
+        flag = cursor.fetchone()
+        rank = request.form['rank']
+        if flag[0]:
+            cursor.execute("UPDATE user_plays SET rank = %s WHERE user_id=%s",[rank,session['id']])
+            conn.commit()
+            return redirect(url_for('profile_by_title',title = title))
+        else:
+            cursor.execute("INSERT INTO user_plays (user_id,game_id, rank) VALUES (%s,%s,%s)", (session['id'], game[0], rank))
+            conn.commit()
+            return redirect(url_for('profile_by_title',title = title))
+    return render_template('set-rank.html',game=game,ranks = ranks)
+
 
 @app.route('/games/<title>/guides')
 def getGuides(title): 
@@ -299,38 +360,6 @@ def addGuide(title):
     return render_template('add-guide.html',title=title)
 
 
-
-
-
-
-@app.route('/games/<title>',methods=['GET', 'POST'])
-def addcomment(title): 
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    if request.method == 'POST' and 'comment' in request.form:
-        # Create variables for easy access
-        comment = request.form['comment']
-        #Check if game exists 
-        cursor.execute('SELECT * FROM games WHERE title = %s', (title,))
-        game = cursor.fetchone()
-        print(game)
-        cursor.execute("INSERT INTO game_comments (comment, game_id, user_id) VALUES (%s,%s,%s)", (comment, game[0], session['id']))
-        conn.commit()
-        cursor.execute('SELECT * FROM game_comments WHERE game_id = %s', [game[0]])
-        print(game)
-        comments = cursor.fetchall()
-        # # If account exists show error and validation checks
-        # if game:
-        #     flash('Game already exists!')
-        # else:
-        #     # Game doesnt exists and the form data is valid, now insert new game into games table
-        #     cursor.execute("INSERT INTO games (title, description, genre,release_date) VALUES (%s,%s,%s,%s)", (title, description, genre,release_date))
-        #     conn.commit()
-        #     return redirect(url_for('games'))
-        return render_template('game.html',game=game,comments=comments)
-
-
-
-
 @app.route('/remove-game',methods=['GET', 'POST'])
 def removegame(): 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -345,6 +374,24 @@ def removegame():
         return redirect(url_for('games'))
     return render_template('remove_game.html',listofgames=listofgames)
     
+
+@app.route('/add-ranks',methods=['GET', 'POST'])
+def addRanks(): 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute('SELECT * FROM games')
+    listofgames = cursor.fetchall()
+    if request.method == 'POST' and 'title' in request.form and 'rank' in request.form:
+        title = request.form['title']
+        rank = request.form['rank']
+        cursor.execute('SELECT * FROM games WHERE title = %s', (title,))
+        game = cursor.fetchone()
+        if rank and title:
+            cursor.execute("INSERT INTO ranks (rank_name, game_id) VALUES (%s,%s)", (rank, game[0]))
+            conn.commit()
+        return redirect(url_for('games'))
+    return render_template('add-ranks.html',listofgames=listofgames)
+    
+
 
 if __name__ == "__main__":
     app.run(debug=True)

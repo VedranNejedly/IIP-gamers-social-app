@@ -28,6 +28,21 @@
             </tr>
         </table>
     </div>
+
+
+    <div class="user-plays">
+        <h2>User plays</h2>
+        {% for up in user_plays %}
+            {% for game in games %}
+                {% if game.id == up.game_id %}
+                <a href="/games/{{game.title}}">{{game.title}}</a>
+                <p>Rank : {{up.rank}}</p>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+
     <h2>User section</h2>
     <form action="{{ url_for('profileComment',  username= account.username) }}" method="post" autocomplete="off"> 
         <div class="form-group">
