@@ -380,9 +380,15 @@ def fetchPlayerbase(title):
     playerbase=cursor.fetchall()
     cursor.execute('SELECT * FROM users ')
     users=cursor.fetchall()
-    return render_template('game-playerbase.html',title=title,playerbase=playerbase,users=users)
-
-    
+    cursor.execute('SELECT * FROM ranks WHERE game_id =%s ',[game[0]])
+    ranks=cursor.fetchall()
+    if request.method == 'POST' and 'rank' in request.form:
+        rank = request.form['rank']
+        print(rank)
+        if rank != 'all':
+            cursor.execute('SELECT * FROM user_plays WHERE game_id =%s AND rank=%s',[game[0],rank])
+            playerbase=cursor.fetchall()
+    return render_template('game-playerbase.html',title=title,playerbase=playerbase,users=users,ranks=ranks,game=game)
 
 
 

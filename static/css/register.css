@@ -1,12 +1,9 @@
-.login-section{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #898e8c;
-    height: 100vh;
+.registration{
+    padding-top: 100px;
+    background-color: #a0d2eb;
 }
 
-.login-section input{
+.registration input{
     margin: 10px 0;
     border-radius: 30px;
 }
@@ -20,5 +17,3 @@ a:hover{
     text-decoration: none!important;
     color: #5d4db9!important;
 }
-
-

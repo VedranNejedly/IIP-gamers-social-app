@@ -5,14 +5,14 @@
 {% block content %}
 
     <div class="row">
-        <div class="col-10 offset-lg-1">
+        <div class="col-12 col-lg-6 offset-lg-3">
             {% if session['role'] == 2 %}
             <h2>ADMIN</h2>
             {% for account in accounts %}
             <a href="profile/{{account.username}}">{{account.username}}</a>
             {% endfor %}
             {% else %}
-            <h2>Welcome to {{account.username}}'s profile</h2>
+            <h2 style="padding-top: 100px;">Welcome to {{account.username}}'s profile</h2>
             <div class="user-plays">
                 {% if user_plays %}
                 <h2>User plays</h2>

@@ -1,6 +1,15 @@
 .card-body{
-    background-color: #e5eaf5;
+    background-color: #969090!important;
 }
-.card-img-top img{
-    height: 150px;
+.card-body a{
+    font-size: 24px;
+}
+.card-header{
+    height: 150px!important;
+}
+
+.card-header img{
+    height: 100%!important;
+    width: 100%!important;
+    object-fit: contain!important;
 }

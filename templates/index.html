@@ -29,7 +29,7 @@
         >
         <a class="py-2 d-none d-md-inline-block" href="{{ url_for('profile_by_id', username=session['username']) }}"
           ><i class="fas fa-user-circle"></i>
-          {% if session['role'] == 2 %} Accounts {% else %} profile {% endif %}
+          {% if session['role'] == 2 %} Accounts {% else %} Profile {% endif %}
         </a>
         <a class="py-2 d-none d-md-inline-block" href="{{ url_for('games') }}"
           ><i class="fas fa-user-circle"></i> Games</a

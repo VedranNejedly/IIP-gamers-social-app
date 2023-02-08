@@ -13,18 +13,16 @@
     <section class="login-section">
         <div class="container">
             <div class="row">
-                <div class="col-12 align-items-center">
+                <div class="col-12 col-lg-6 offset-lg-3 align-items-center">
                     <h2 class="login-title">
                         Welcome to Login page.
                     </h2>
+                    <p>Please enter your credentials</p>
                 </div>
-                <div class="col-12">
+                <div class="col-12 col-lg-6 offset-lg-3">
                     <form class="form-group" action="{{ url_for('login') }}" method="post">
-                        <label>Username</label>
                         <input type="text" class="form-control" name="username" placeholder="Username" id="username" required>
-                        <label>Password</label>
                         <input type="password" class="form-control" name="password" placeholder="Password" id="password" required>
-                        <input type="checkbox" value="checked"><b>Remember</b>
                         <input type="submit" value="Login" class="form-control btn btn-success " name="">
                     </form>
 
@@ -50,7 +48,7 @@
                             {% endfor %}
                         {% endif %}
                     {% endwith %}
-                    <p>No account <a href="{{ url_for('register') }}">Register</a></p>
+                    <p>You don't have an account?<a href="{{ url_for('register') }}"> Sign up here</a></p>
                 </div>
             </div>
         </div>

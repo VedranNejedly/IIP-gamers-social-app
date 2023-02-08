@@ -6,12 +6,8 @@
 
 
 {% block content %}
-<div class="title-guides-wrapper">
+<div class="title">
     <h2>{{game.title}}</h2>
-    <a href="/games/{{game.title}}/guides">Game guides</a>
-    <a class="py-2 d-none d-md-inline-block" href="{{ url_for('setRank', title=game.title) }}">Set your rank</a>
-    <a class="py-2 d-none d-md-inline-block" href="{{ url_for('fetchPlayerbase', title=game.title) }}">Get Playerbase</a>
-
 </div>
 <div>
     <p>Relase date : {{game.release_date}}</p>
@@ -19,34 +15,47 @@
     <p>About the game: {{game.description}}</p>
 
 </div>
+<ul class="game-links-list">
+    <li class="list-item">
+        <a class="py-2 d-none d-md-inline-block" href="/games/{{game.title}}/guides">Game guides</a>
+    </li>
+    <li class="list-item">
+        <a class="py-2 d-none d-md-inline-block" href="{{ url_for('setRank', title=game.title) }}">Set your rank</a>
+    </li>
+    <li class="list-item">
+        <a class="py-2 d-none d-md-inline-block" href="{{ url_for('fetchPlayerbase', title=game.title) }}">Get Playerbase</a>
+    </li>
+    
+</ul>
 
 
-<form action="{{ url_for('addcomment', title = game.title) }}" method="post" autocomplete="off"> 
-    <div class="form-group">
-     <label for="comment" class="cols-sm-2 control-label">Add your comment here</label>
-     <div class="cols-sm-10">
-      <div class="input-group">
-       <input type="text" class="form-control" name="comment" id="comment"  placeholder="Add your comment here"/>
-      </div>
-     </div>
-    </div>
-    <input type="submit" value="Comment" class="form-control btn btn-primary " name="">
-</form>
+<div class="row">
+    
+    <div class="col-12 col-lg-6 offset-lg-3">
+        <form action="{{ url_for('addcomment', title = game.title) }}" method="post" autocomplete="off"> 
+            <div class="form-group">
+            <div class="cols-sm-10">
+            <div class="input-group">
+            <input type="text" class="form-control" name="comment" id="comment"  placeholder="Leave a comment."/>
+            </div>
+            </div>
+            </div>
+            <input type="submit" value="Comment" class="form-control btn btn-primary " name="">
+        </form>
 
 
-    {% for comment in comments %}
-        {% for user in users %}
-            {% if user.id == comment.user_id %}
-                <div class="comment">
-                    <a href="/profile/{{user.username}}">{{user.username}}</a>
-                    <p>{{comment.comment}}</p>
-                </div>
-            {% endif %}
-
-        {% endfor %}
-
-
-    {% endfor %}
+            {% for comment in comments %}
+                {% for user in users %}
+                    {% if user.id == comment.user_id %}
+                        <div class="comment">
+                            <a href="/profile/{{user.username}}">{{user.username}}</a>
+                            <p>{{comment.comment}}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+</div>
 
 
     

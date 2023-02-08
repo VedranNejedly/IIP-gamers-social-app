@@ -8,15 +8,34 @@
 
 
 {% block content %}
+
+<form action="{{ url_for('fetchPlayerbase',title=game.title) }}" method="post" autocomplete="off">
+    <div class="form-group">
+     <label for="rank" class="cols-sm-2 control-label">Select rank to filter by.</label>
+        <select name="rank">
+            <option value="all">All</option>
+            {% for rank in ranks %}
+                <option value="{{rank.rank_name}}">{{rank.rank_name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <input type="submit" value="Filter" class="form-control btn btn-primary " name="">
+</form>
+
+
 <div>
+    <ul class="playerbase-list">
     {% for player in playerbase %}
         {% for user in users %}
             {% if user.id == player.user_id %}
+            <li class="list-item">
                 <a href="/profile/{{user.username}}">{{user.username}}</a>
                 <p>{{player.rank}}</p>
+            </li>
             {% endif %}
         {% endfor %}
     {% endfor %}
+    </ul>
 </div>
 
 {% endblock %}

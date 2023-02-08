@@ -7,3 +7,12 @@
 .title-guides-wrapper a{
     color: #000000;
 }
+
+.game-links-list{
+    display: flex;
+    padding: 0;
+}
+
+.game-links-list li+li{
+    margin-left: 10px;
+}
