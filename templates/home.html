@@ -3,8 +3,9 @@
 {% block title %}Home{% endblock %}
   
 {% block content %}
-    <h1 class="h2">Dashboard</h1>
     {% if session['role'] == 2 %}
+    <h1 class="h2">Dashboard</h1>
+
             <h2>ADMIN</h2>
         
         {% for account in accounts %}

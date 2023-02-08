@@ -5,28 +5,37 @@ import psycopg2.extras
 import re 
 from werkzeug.security import generate_password_hash, check_password_hash
 
- 
+UPLOAD_FOLDER = '/static/images'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.secret_key = 'project-key'
-DB_HOST = "localhost"
-DB_NAME = "project"
-DB_USER = "postgres"
-DB_PASS = "admin"
- 
+# DB_HOST = "localhost"
+# DB_NAME = "project"
+# DB_USER = "postgres"
+# DB_PASS = "admin"
+
+DB_HOST = "manny.db.elephantsql.com"
+DB_NAME = "nihgowhd"
+DB_USER = "nihgowhd"
+DB_PASS = "QO1Pid80tjfV2OXC9BdRZb_2BDLnyjEE"
+
+# roxvyxky
+
 conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
- 
 @app.route('/')
 def home():
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    # cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
    
     # Check if user is loggedin
     if 'loggedin' in session:
         print(session)
-        cursor.execute('SELECT * FROM users WHERE role = 1')
-        accounts = cursor.fetchall()
+        # cursor.execute('SELECT * FROM users WHERE role = 1')
+        # accounts = cursor.fetchall()
         # Show the profile page with account info
-        return render_template('home.html', accounts=accounts)
+        return render_template('home.html')
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
@@ -37,6 +46,7 @@ def home():
     #     return render_template('home.html', username=session['username'])
     # # User is not loggedin redirect to login page
     # return redirect(url_for('login'))
+
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -118,6 +128,7 @@ def logout():
    session.pop('loggedin', None)
    session.pop('id', None)
    session.pop('username', None)
+   session.pop('role',None)
    # Redirect to login page
    return redirect(url_for('login'))
   
@@ -199,7 +210,7 @@ def addcomment(title):
         conn.commit()
         cursor.execute('SELECT * FROM game_comments where game_id = %s', [game[0]])
         comments = cursor.fetchall()
-        return render_template('game.html',game=game,comments=comments,users=users)
+    return render_template('game.html',game=game,comments=comments,users=users)
 
 
 
@@ -291,7 +302,7 @@ def setRank(title):
         cursor.execute("SELECT * FROM user_plays WHERE user_id =%s",[session['id']])
         flag = cursor.fetchone()
         rank = request.form['rank']
-        if flag[0]:
+        if flag:
             cursor.execute("UPDATE user_plays SET rank = %s WHERE user_id=%s",[rank,session['id']])
             conn.commit()
             return redirect(url_for('profile_by_title',title = title))
@@ -349,7 +360,7 @@ def addGuide(title):
         game = cursor.fetchone()
         # Game doesnt exists and the form data is valid, now insert new game into games table
         if youtube_link:
-            cursor.execute("INSERT INTO guides (title, guide_text, youtube_link,game_id,user_id) VALUES (%s,%s,%s,%s)", (guide_title, guide_text, youtube_link,game[0],session['id']))
+            cursor.execute("INSERT INTO guides (title, guide_text, youtube_link,game_id,user_id) VALUES (%s,%s,%s,%s,%s)", (guide_title, guide_text, youtube_link,game[0],session['id']))
             conn.commit()
         else:
             cursor.execute("INSERT INTO guides (title, guide_text,game_id,user_id) VALUES (%s,%s,%s,%s)", (guide_title, guide_text,game[0],session['id']))

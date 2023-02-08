@@ -1,3 +1,6 @@
 .card-body{
     background-color: #e5eaf5;
 }
+.card-img-top img{
+    height: 150px;
+}

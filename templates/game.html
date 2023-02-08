@@ -9,6 +9,7 @@
 <div class="title-guides-wrapper">
     <h2>{{game.title}}</h2>
     <a href="/games/{{game.title}}/guides">Game guides</a>
+    <a class="py-2 d-none d-md-inline-block" href="{{ url_for('setRank', title=game.title) }}">Set your rank</a>
 </div>
 <div>
     <p>Relase date : {{game.release_date}}</p>
@@ -46,7 +47,7 @@
     {% endfor %}
 
 
-    <a class="py-2 d-none d-md-inline-block" href="{{ url_for('setRank', title=game.title) }}">Add ranks to game</a>
+    
 
 
 
