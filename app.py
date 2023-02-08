@@ -371,6 +371,21 @@ def addGuide(title):
     return render_template('add-guide.html',title=title)
 
 
+@app.route('/games/<title>/playerbase',methods=['GET', 'POST'])
+def fetchPlayerbase(title): 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute('SELECT * FROM games WHERE title =%s',(title,))
+    game=cursor.fetchone()
+    cursor.execute('SELECT * FROM user_plays WHERE game_id =%s',[game[0]])
+    playerbase=cursor.fetchall()
+    cursor.execute('SELECT * FROM users ')
+    users=cursor.fetchall()
+    return render_template('game-playerbase.html',title=title,playerbase=playerbase,users=users)
+
+    
+
+
+
 @app.route('/remove-game',methods=['GET', 'POST'])
 def removegame(): 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -405,5 +420,5 @@ def addRanks():
 
 
 if __name__ == "__main__":
-    # app.run(debug=True)
-    app.run(debug=False,host='0.0.0.0')
+    app.run(debug=True)
+    # app.run(debug=False,host='0.0.0.0')

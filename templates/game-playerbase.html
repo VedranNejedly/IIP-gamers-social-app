@@ -1,0 +1,22 @@
+{% extends 'index.html' %}
+
+<!-- {% block title %} -->
+
+<!-- {% endblock %} -->
+
+
+
+
+{% block content %}
+<div>
+    {% for player in playerbase %}
+        {% for user in users %}
+            {% if user.id == player.user_id %}
+                <a href="/profile/{{user.username}}">{{user.username}}</a>
+                <p>{{player.rank}}</p>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+</div>
+
+{% endblock %}
