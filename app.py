@@ -132,21 +132,30 @@ def logout():
    # Redirect to login page
    return redirect(url_for('login'))
   
-# @app.route('/profile')
-# def profile(): 
-#     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-   
-#     # Check if user is loggedin
-#     if 'loggedin' in session:
-#         cursor.execute('SELECT * FROM users WHERE id = %s', [session['id']])
-#         account = cursor.fetchone()
-#         cursor.execute('SELECT * FROM users WHERE role = 1')
-#         accounts = cursor.fetchall()
+@app.route('/profiles-admin')
+def profilesAdmin(): 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    if not 'loggedin' in session:
+        return redirect(url_for('login'))
+    # Check if user is loggedin
+    if session['role'] == 2:
+        cursor.execute('SELECT * FROM users WHERE role = 1')
+        accounts = cursor.fetchall()
+        # Show the profile page with account info
+        return render_template('profiles-admin.html', accounts = accounts)
+    # User is not loggedin redirect to login page
+    return redirect(url_for('home'))
 
-#         # Show the profile page with account info
-#         return render_template('profile.html', account=account, accounts = accounts)
-#     # User is not loggedin redirect to login page
-#     return redirect(url_for('login'))
+@app.route('/profiles-admin/<id>')
+def deleteAccount(id):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute('DELETE FROM users WHERE id = %s',(id))
+    conn.commit()
+    cursor.execute('SELECT * FROM users WHERE role = 1')
+    accounts = cursor.fetchall()
+    return render_template('profiles-admin.html', accounts = accounts)
+
+
 
 @app.route('/profile/<username>')
 def profile_by_id(username): 

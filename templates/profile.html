@@ -9,8 +9,11 @@
             {% if session['role'] == 2 %}
             <h2>ADMIN</h2>
             {% for account in accounts %}
-            <a href="profile/{{account.username}}">{{account.username}}</a>
+                <a href="profile/{{account.username}}">{{account.username}}</a>
             {% endfor %}
+
+
+
             {% else %}
             <h2 style="padding-top: 100px;">Welcome to {{account.username}}'s profile</h2>
             <div class="user-plays">

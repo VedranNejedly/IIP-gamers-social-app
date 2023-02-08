@@ -1,0 +1,37 @@
+{% extends 'index.html' %}
+
+{% block title %}Accounts{% endblock %}
+  
+{% block content %}
+
+    <div class="row">
+        <div class="col-12 col-lg-6 offset-lg-3">
+            <h2>ADMIN</h2>
+            <div class="accounts-list">
+                <ul class="accounts-list">
+                        {% for account in accounts %}
+                        <li class="account">
+
+                            <div class="user-wrapper">
+                                <a href="profile/{{account.username}}">{{account.username}}</a>
+                                <a class="py-2 d-none d-md-inline-block" href="{{ url_for('deleteAccount', id = account.id) }}">Delete account</a>
+                            </div>
+                        </li>
+
+                        {% endfor %}
+                </ul>
+            </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+    </div>
+
+
+
+{% endblock %}

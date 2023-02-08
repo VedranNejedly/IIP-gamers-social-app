@@ -26,3 +26,8 @@ li{
 .playerbase-list li{
 margin-right: 40px;
 }
+
+.accounts-list li .user-wrapper{
+    display: flex;
+    justify-content: space-between;
+}

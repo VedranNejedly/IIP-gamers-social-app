@@ -27,9 +27,14 @@
         <a class="py-2 d-none d-md-inline-block" href="{{ url_for('home') }}"
           ><i class="fas fa-home"></i> Home</a
         >
-        <a class="py-2 d-none d-md-inline-block" href="{{ url_for('profile_by_id', username=session['username']) }}"
+
+          {% if session['role'] == 2 %}
+          <a class="py-2 d-none d-md-inline-block" href="{{ url_for('profilesAdmin') }}"
           ><i class="fas fa-user-circle"></i>
-          {% if session['role'] == 2 %} Accounts {% else %} Profile {% endif %}
+           Accounts {% else %} 
+           <a class="py-2 d-none d-md-inline-block" href="{{ url_for('profile_by_id', username=session['username']) }}"
+           ><i class="fas fa-user-circle"></i>
+           Profile {% endif %}
         </a>
         <a class="py-2 d-none d-md-inline-block" href="{{ url_for('games') }}"
           ><i class="fas fa-user-circle"></i> Games</a
