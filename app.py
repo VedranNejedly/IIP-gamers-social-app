@@ -3,13 +3,18 @@ from flask import Flask, request, session, redirect, url_for, render_template, f
 import psycopg2 #pip install psycopg2 
 import psycopg2.extras
 import re 
+import os
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = '/static/images'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
+
+UPLOAD_FOLDER='static\images'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app = Flask(__name__)
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 app.secret_key = 'project-key'
 # DB_HOST = "localhost"
@@ -23,6 +28,9 @@ DB_USER = "nihgowhd"
 DB_PASS = "QO1Pid80tjfV2OXC9BdRZb_2BDLnyjEE"
 
 # roxvyxky
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
 @app.route('/')
@@ -46,6 +54,7 @@ def home():
     #     return render_template('home.html', username=session['username'])
     # # User is not loggedin redirect to login page
     # return redirect(url_for('login'))
+
 
 
 @app.route('/login/', methods=['GET', 'POST'])
@@ -237,17 +246,34 @@ def games():
     return redirect(url_for('login'))
 
 
+# @app.route('/',methods=['POST'])
+# def upload_image():
+#   if request.method == 'POST':
+#         # check if the post request has the file part
+#         if 'file' not in request.files:
+#             flash('No file part')
+#             return redirect(request.url)
+#         file = request.files['file']
+#         # If the user does not select a file, the browser submits an
+#         # empty file without a filename.
+#         if file.filename == '':
+#             flash('No selected file')
+#             return redirect(request.url)
+#         if file and allowed_file(file.filename):
+#             filename = secure_filename(file.filename)
+#             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+#             return redirect(request.url)
 
 @app.route('/add-game',methods=['GET', 'POST'])
 def addgame(): 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    if request.method == 'POST' and 'title' in request.form and 'description' in request.form and 'genre' in request.form and 'release_date' in request.form:
-        # Create variables for easy access
+    if request.method == 'POST' and 'title' in request.form and 'file' in request.files and 'description' in request.form and 'genre' in request.form and 'release_date' in request.form:
+
         title = request.form['title']
         description = request.form['description']
         genre = request.form['genre']
         release_date = request.form['release_date']
-
+        file = request.files['file']
  
         #Check if game exists 
         cursor.execute('SELECT * FROM games WHERE title = %s', (title,))
@@ -258,9 +284,15 @@ def addgame():
             flash('Game already exists!')
         else:
             # Game doesnt exists and the form data is valid, now insert new game into games table
+
+            if file and allowed_file(file.filename):
+                splitName = file.filename.rsplit(".")
+                filename = secure_filename(title)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename+'.'+splitName[1]))
             cursor.execute("INSERT INTO games (title, description, genre,release_date) VALUES (%s,%s,%s,%s)", (title, description, genre,release_date))
             conn.commit()
             return redirect(url_for('games'))
+        
 
     elif request.method == 'POST':
         # Form is empty... (no POST data)

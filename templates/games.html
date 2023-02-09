@@ -16,11 +16,16 @@
 {% endif %}
 
 <div class="games-list">
+  
     {% for game in games %}
-
     <a href="games/{{game.title}}">
       <div class="card" style="width: 18rem;">
-          <div class="card-header"><img class="card-img-top" src="../static/images/{{game.title}}.png" alt="Card image cap"></div>
+          <div class="card-header">
+
+            <img src="../static/images/{{ game.title | replace(' ','_') }}.jpg" alt="Image not found" onerror="this.onerror=null;this.src='../static/images/{{game.title}}.jpeg';" />
+            <!-- <img class="card-img-top" src="../static/images/{{game.title}}.png"> -->
+            
+          </div>
           <div class="card-body">
             <h3 class="card-title">{{game.title}}</a>
             <p class="card-text">{{game.desc}}</p>

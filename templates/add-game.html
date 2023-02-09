@@ -11,7 +11,7 @@
     </h1>
     <a href="{{ url_for('games') }}">Back to games</a>
 
-    <form action="{{ url_for('addgame') }}" method="post" autocomplete="off"> 
+    <form action="{{ url_for('addgame') }}" method="post" autocomplete="off" enctype="multipart/form-data"> 
         <div class="form-group">
          <label for="title" class="cols-sm-2 control-label">Game Title</label>
          <div class="cols-sm-10">
@@ -46,6 +46,15 @@
               <span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
               <input type="date" class="form-control" name="release_date" id="release_date" placeholder="Enter release date." required>
              </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="release_date" class="cols-sm-2 control-label">Game cover</label>
+            <div class="cols-sm-10">
+                <div class="input-group">
+                <input type="file" name="file" class="form-control" autocomplete="off" required>
+                </div>
             </div>
         </div>
         <input type="submit" value="Add game" class="form-control btn btn-primary " name="">
