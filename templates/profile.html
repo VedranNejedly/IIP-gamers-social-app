@@ -11,10 +11,10 @@
             {% for account in accounts %}
                 <a href="profile/{{account.username}}">{{account.username}}</a>
             {% endfor %}
+            {% endif %}
 
 
 
-            {% else %}
             <h2 style="padding-top: 100px;">Welcome to {{account.username}}'s profile</h2>
             <div class="user-plays">
                 {% if user_plays %}
@@ -59,6 +59,9 @@
             {% if user.id == comment.commentator_id %}
                 <div class="comment">
                     <a href="/profile/{{user.username}}">{{user.username}}</a>
+                    {% if user.id == session['id'] or session['role'] == 2 %}
+                    <a class="py-2 d-none d-md-inline-block" href="{{ url_for('deleteProfileComment',username= account.username ,comment_id=comment.id) }}">Delete comment</a>
+                    {% endif %}
                     <p>{{comment.comment}}</p>
                 </div>
             {% endif %}
@@ -70,6 +73,5 @@
     </div>
 
 
-    {% endif %}
 
 {% endblock %}

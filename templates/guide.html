@@ -9,6 +9,9 @@
 
 {% block content %}
 <div>
+    {% if guide.user_id == session['id'] or session['role'] == 2 %}
+        <a class="py-2 d-none d-md-inline-block" href="{{ url_for('deleteGuide',title = game.title ,guide_id = guide.id) }}">Delete guide</a>
+    {% endif %}
     <h2> {{guide.title}}</h2>
     <p>{{guide.guide_text}}</p>
     {% if guide.youtube_link %}

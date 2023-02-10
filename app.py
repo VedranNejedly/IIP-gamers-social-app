@@ -209,6 +209,21 @@ def profileComment(username):
         cursor.execute('SELECT * FROM profile_comments where target_id = %s', [account['id']])
         comments = cursor.fetchall()
         return render_template('profile.html',account=account,comments=comments,users=users)
+    
+@app.route('/profile/<username>/<comment_id>',methods=['GET', 'POST'])
+def deleteProfileComment(comment_id,username):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute('DELETE FROM profile_comments WHERE id = %s',(comment_id,))
+    cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
+    account = cursor.fetchone()
+    cursor.execute('SELECT * FROM users')
+    users = cursor.fetchall()
+    cursor.execute('SELECT * FROM profile_comments WHERE target_id = %s', [account['id']])
+    comments = cursor.fetchall()
+    conn.commit()
+    return render_template('profile.html', account=account,comments=comments,users=users )
+
+
 
 
 @app.route('/games/<title>',methods=['GET', 'POST'])
@@ -377,16 +392,36 @@ def getGuide(title,guide_id):
     if 'loggedin' in session:
         # cursor.execute('SELECT * FROM games WHERE title = %s', (title,))
         # game = cursor.fetchone()
+        cursor.execute('SELECT * FROM games WHERE title = %s', (title,))
+        game = cursor.fetchone()
+        print(guide_id)
         cursor.execute('SELECT * FROM guides WHERE id = %s', (guide_id,))
         guide = cursor.fetchone()
         # print(guides)
         # cursor.execute('SELECT * FROM users')
         # users = cursor.fetchall()
-        return render_template('guide.html', guide = guide)
+        return render_template('guide.html', guide = guide, game = game)
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
 
+@app.route('/games/<title>/guides/<guide_id>/delete')
+def deleteGuide(title,guide_id): 
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    # Check if user is loggedin
+    if 'loggedin' in session:
+        cursor.execute('SELECT * FROM games WHERE title = %s', (title,))
+        game = cursor.fetchone()
+        cursor.execute('DELETE FROM guides WHERE id = %s', (guide_id,))
+        cursor.execute('SELECT * FROM guides WHERE game_id = %s', [game[0]])
+        guides = cursor.fetchall()
+        conn.commit()
+
+        return redirect(url_for('getGuides',title = title))
+
+        # return render_template('guides.html', guides=guides, game = game)
+    # User is not loggedin redirect to login page
+    return redirect(url_for('login'))
 
 @app.route('/games/<title>/guides/add-guide',methods=['GET', 'POST'])
 def addGuide(title): 
