@@ -3,13 +3,16 @@
 @import "typography.css";
 @import "comments.css";
 @import "card.css";
-@import "register.css";
+/* @import "register.css"; */
+@import "profile.css";
+
+
 
 
 
 
 .container-fluid,nav,html{
-    background-color:  #a0d2eb;
+    background-color: #BC8FF6;
 }
 li{
     list-style-type: none;

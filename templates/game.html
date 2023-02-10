@@ -49,6 +49,9 @@
                     {% if user.id == comment.user_id %}
                         <div class="comment">
                             <a href="/profile/{{user.username}}">{{user.username}}</a>
+                            {% if user.id == session['id'] or session['role'] == 2 %}
+                            <a class="py-2 d-none d-md-inline-block" href="{{ url_for('deleteGameComment',title= game.title ,comment_id=comment.id) }}">Delete comment</a>
+                            {% endif %}
                             <p>{{comment.comment}}</p>
                         </div>
                     {% endif %}

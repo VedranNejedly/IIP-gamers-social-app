@@ -4,11 +4,15 @@
 }
 .comment{
     padding: 10px;
-    background-color: #969090;
-    border: 1px solid #FFFFFF;
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
     margin: 10px 0;
 }
+.comment .comment-header{
+    display: flex;
+    justify-content: space-between;
+}
 .comment a,p{
-    color: #FFFFFF;
+    color: #000000;
 }
 

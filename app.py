@@ -208,7 +208,8 @@ def profileComment(username):
         conn.commit()
         cursor.execute('SELECT * FROM profile_comments where target_id = %s', [account['id']])
         comments = cursor.fetchall()
-        return render_template('profile.html',account=account,comments=comments,users=users)
+        return redirect(url_for('profile_by_id',username = username))
+        # return render_template('profile.html',account=account,comments=comments,users=users)
     
 @app.route('/profile/<username>/<comment_id>',methods=['GET', 'POST'])
 def deleteProfileComment(comment_id,username):
@@ -221,7 +222,8 @@ def deleteProfileComment(comment_id,username):
     cursor.execute('SELECT * FROM profile_comments WHERE target_id = %s', [account['id']])
     comments = cursor.fetchall()
     conn.commit()
-    return render_template('profile.html', account=account,comments=comments,users=users )
+    return redirect(url_for('profile_by_id',username = username))
+    # return render_template('profile.html', account=account,comments=comments,users=users )
 
 
 
@@ -239,11 +241,16 @@ def addcomment(title):
         # Create variables for easy access
         comment = request.form['comment']
         # Check if game exists 
-        cursor.execute("INSERT INTO game_comments (comment, user_id, game_id) VALUES (%s,%s,%s)", (comment, session['id'], game[0]))
-        conn.commit()
+        if comment != '':
+            cursor.execute("INSERT INTO game_comments (comment, user_id, game_id) VALUES (%s,%s,%s)", (comment, session['id'], game[0]))
+            conn.commit()
         cursor.execute('SELECT * FROM game_comments where game_id = %s', [game[0]])
         comments = cursor.fetchall()
     return render_template('game.html',game=game,comments=comments,users=users)
+
+
+
+
 
 
 
@@ -346,6 +353,15 @@ def profile_by_title(title):
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
+
+@app.route('/games/<title>/<comment_id>',methods=['GET', 'POST'])
+def deleteGameComment(comment_id,title):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute('DELETE FROM game_comments WHERE id = %s',(comment_id,))
+    cursor.execute('SELECT * FROM games WHERE title = %s', (title,))
+    conn.commit()
+    return redirect(url_for('profile_by_title',title = title))
+    # return render_template('profile.html', account=account,comments=comments,users=users )
 
 @app.route('/games/<title>/set-rank',methods=['GET', 'POST'])
 def setRank(title): 

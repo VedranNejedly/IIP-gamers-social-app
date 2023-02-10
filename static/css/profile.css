@@ -1,0 +1,15 @@
+.profile-comment-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.profile-comment-form .submit-button{
+    width: 200px;
+    margin-top: 10px;
+
+}
+
+
+.profile-comment-form .input-group{
+    width: 100%;
+}

@@ -5,7 +5,7 @@
 {% block content %}
 
     <div class="row">
-        <div class="col-12 col-lg-6 offset-lg-3">
+        <div class="col-12">
             {% if session['role'] == 2 %}
             <h2>ADMIN</h2>
             {% for account in accounts %}
@@ -39,17 +39,14 @@
 
 
     <div class="row">
-        <div class="col-12 col-lg-6 offset-lg-3">
+        <div class="col-12 col-lg-10 offset-lg-1">
             <form action="{{ url_for('profileComment',  username= account.username) }}" method="post" autocomplete="off"> 
-                <div class="form-group">
-                <label for="comment" class="cols-sm-2 control-label">Add your comment here</label>
-                <div class="cols-sm-10">
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="comment" id="comment"  placeholder="Add your comment here"/>
-                    </div>
+                <div class="form-group profile-comment-form">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="comment" id="comment"  placeholder="Add your comment here"/>
+                        </div>
+                    <input type="submit" value="Comment" class="form-control submit-button " name="">
                 </div>
-                </div>
-                <input type="submit" value="Comment" class="form-control btn btn-primary " name="">
             </form>
         
         </div>
@@ -58,10 +55,14 @@
             {% for user in users %}
             {% if user.id == comment.commentator_id %}
                 <div class="comment">
-                    <a href="/profile/{{user.username}}">{{user.username}}</a>
-                    {% if user.id == session['id'] or session['role'] == 2 %}
-                    <a class="py-2 d-none d-md-inline-block" href="{{ url_for('deleteProfileComment',username= account.username ,comment_id=comment.id) }}">Delete comment</a>
-                    {% endif %}
+
+                    <div class="comment-header">
+                        <a href="/profile/{{user.username}}">{{user.username}}</a>
+                        {% if user.id == session['id'] or session['role'] == 2 %}
+                        <a class="py-2 d-none d-md-inline-block" href="{{ url_for('deleteProfileComment',username= account.username ,comment_id=comment.id) }}">Delete comment</a>
+                        {% endif %}
+                    </div>
+
                     <p>{{comment.comment}}</p>
                 </div>
             {% endif %}

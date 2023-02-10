@@ -1,6 +1,7 @@
 .registration{
+    min-height: 100vh;
     padding-top: 100px;
-    background-color: #a0d2eb;
+    background-color: #BC8FF6;
 }
 
 .registration input{
@@ -8,7 +9,22 @@
     border-radius: 30px;
 }
 
-a,p,h2{
+.registration .submit-button{
+    width: 200px;
+    height: 30px;
+    background-color: white;
+    border: 0;
+    height: 38px;
+    border-radius: 35px;
+}
+
+.registration .altered{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* a,p,h2{
     color:#FFFFFF!important;
     font-size: 18px;
 }
@@ -16,4 +32,4 @@ a,p,h2{
 a:hover{
     text-decoration: none!important;
     color: #5d4db9!important;
-}
+} */
